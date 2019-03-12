@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ortogo.SolidWorks.StillageTask
+namespace Ortogo.SolidWorks.ShelvingTask
 {
     public class Frame
     {

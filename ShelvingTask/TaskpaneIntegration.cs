@@ -4,7 +4,7 @@ using SolidWorks.Interop.swpublished;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Ortogo.SolidWorks.StillageTask
+namespace Ortogo.SolidWorks.ShelvingTask
 {
     /// <summary>
     /// Our SolidWorks taskpane add-in
@@ -40,7 +40,7 @@ namespace Ortogo.SolidWorks.StillageTask
         /// <summary>
         /// The unique Id to the taskpane used for registration in COM
         /// </summary>
-        public const string SWTASKPANE_PROGID = "Ortogo.SolidWorks.StillageTask.Taskpane";
+        public const string SWTASKPANE_PROGID = "Ortogo.SolidWorks.ShelvingTask.Taskpane";
 
         #endregion
 
@@ -96,7 +96,7 @@ namespace Ortogo.SolidWorks.StillageTask
             var imagePath = Path.Combine(Path.GetDirectoryName(typeof(TaskpaneIntegration).Assembly.CodeBase).Replace(@"file:\", string.Empty), "logo-small.png");
 
             // Create our Taskpane
-            mTaskpaneView = mSolidWorksApplication.CreateTaskpaneView2(imagePath, "Stellage");
+            mTaskpaneView = mSolidWorksApplication.CreateTaskpaneView2(imagePath, "Shelving");
 
             // Load our UI into the taskpane
             mTaskpaneHost = (TaskpaneHostUI)mTaskpaneView.AddControl(TaskpaneIntegration.SWTASKPANE_PROGID, string.Empty);
@@ -138,7 +138,7 @@ namespace Ortogo.SolidWorks.StillageTask
                 rk.SetValue(null, 1);
 
                 // Set SolidWorks add-in title and description
-                rk.SetValue("Title", "Автоматическое проектирование стеллажа");
+                rk.SetValue("Title", "Проектирование стеллажа");
                 rk.SetValue("Description", "Повзволяет рассчитать и создать модель стеллажа");
             }
         }

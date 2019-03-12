@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Ortogo.SolidWorks.StillageTask;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Ortogo.SolidWorks.ShelvingTask;
 
-namespace StillageTaskTest
+namespace ShelvingTaskTest
 {
     [TestClass]
     public class TraversaCutTests

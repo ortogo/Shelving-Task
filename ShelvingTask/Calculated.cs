@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ortogo.SolidWorks.StillageTask
+namespace Ortogo.SolidWorks.ShelvingTask
 {
     public struct Calculator
     {
@@ -35,7 +35,7 @@ namespace Ortogo.SolidWorks.StillageTask
             else
             {
                 c.message += $"Подобранная траверса: {c.traversa}{System.Environment.NewLine}";
-                c.message = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стелажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
+                c.message = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стеллажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
                 try
                 {
                     c.supportType = new SupportElement().Select();

@@ -1,14 +1,14 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Ortogo.SolidWorks.StillageTask;
+using Ortogo.SolidWorks.ShelvingTask;
 using System;
 
-namespace StillageTaskTest
+namespace ShelvingTaskTest
 {
     [TestClass]
-    public class StillageTaskTests
+    public class ShelvingTaskTests
     {
         [TestMethod]
-        public void TestStillageCalculation()
+        public void TestShelvingCalculation()
         {
             TestSets.InitFirst();
             var c = Calculator.Calculate();

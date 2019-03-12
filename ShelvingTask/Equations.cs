@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Ortogo.SolidWorks.StillageTask
+namespace Ortogo.SolidWorks.ShelvingTask
 {
     /// <summary>
     /// Solidworks equations interface

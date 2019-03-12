@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ortogo.SolidWorks.StillageTask
+namespace Ortogo.SolidWorks.ShelvingTask
 {
     public class SupportElement
     {

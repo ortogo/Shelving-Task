@@ -1,4 +1,4 @@
-﻿namespace Ortogo.SolidWorks.StillageTask
+﻿namespace Ortogo.SolidWorks.ShelvingTask
 {
     partial class TaskpaneHostUI
     {

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StillageTask", "StillageTask\StillageTask.csproj", "{3893762A-3CF1-46D5-81B8-245C0659D2BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShelvingTask", "ShelvingTask\ShelvingTask.csproj", "{3893762A-3CF1-46D5-81B8-245C0659D2BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StillageTaskTest", "StillageTaskTest\StillageTaskTest.csproj", "{41F5369E-A45A-4B1F-A0B2-57470015F3B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShelvingTaskTest", "ShelvingTaskTest\ShelvingTaskTest.csproj", "{41F5369E-A45A-4B1F-A0B2-57470015F3B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

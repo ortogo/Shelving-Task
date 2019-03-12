@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Ortogo.SolidWorks.StillageTask
+namespace Ortogo.SolidWorks.ShelvingTask
 {
     [ProgId(TaskpaneIntegration.SWTASKPANE_PROGID)]
     public partial class TaskpaneHostUI : UserControl

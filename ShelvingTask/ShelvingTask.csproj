@@ -7,8 +7,8 @@
     <ProjectGuid>{3893762A-3CF1-46D5-81B8-245C0659D2BB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ortogo.SolidWorks.StillageTask</RootNamespace>
-    <AssemblyName>Ortogo.SolidWorks.StillageTask</AssemblyName>
+    <RootNamespace>Ortogo.SolidWorks.ShelvingTask</RootNamespace>
+    <AssemblyName>Ortogo.SolidWorks.ShelvingTask</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Ortogo.SolidWorks.StillageTask;
+﻿using Ortogo.SolidWorks.ShelvingTask;
 
-namespace StillageTaskTest
+namespace ShelvingTaskTest
 {
     public class TestSets
     {
