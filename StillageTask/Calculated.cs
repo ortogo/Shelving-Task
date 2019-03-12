@@ -25,7 +25,7 @@ namespace Ortogo.SolidWorks.StillageTask
 
             c.frame = new Frame();
 
-            c.message = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стелажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
+            
             c.traversa = new TraversaCut().Select();
             if (c.traversa == null)
             {
@@ -35,6 +35,7 @@ namespace Ortogo.SolidWorks.StillageTask
             else
             {
                 c.message += $"Подобранная траверса: {c.traversa}{System.Environment.NewLine}";
+                c.message = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стелажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
                 try
                 {
                     c.supportType = new SupportElement().Select();
