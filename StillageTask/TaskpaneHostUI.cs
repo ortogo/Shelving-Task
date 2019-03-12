@@ -33,6 +33,8 @@ namespace Ortogo.SolidWorks.StillageTask
             UpdateGlobalScope();
             var c = Calculate();
 
+            if (!c.success) return;
+
             var eq = new SolidworksEquations(@"F:\frame\eq.txt");
 
             eq.Values["NL"].Value = GlobalScope.NL;
@@ -196,6 +198,7 @@ namespace Ortogo.SolidWorks.StillageTask
             UpdateGlobalScope();
             var c = Calculate();
 
+            if (!c.success) return;
 
             var saveFileDialog = new SaveFileDialog
             {
