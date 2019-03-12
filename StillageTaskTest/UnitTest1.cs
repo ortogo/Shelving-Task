@@ -8,6 +8,7 @@ namespace StillageTaskTest
         [TestMethod]
         public void TestStillageCalculation()
         {
+
         }
     }
 }

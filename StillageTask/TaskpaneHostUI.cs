@@ -31,9 +31,15 @@ namespace Ortogo.SolidWorks.StillageTask
         public void BuildFrame()
         {
             UpdateGlobalScope();
-            var c = Calculate();
+            var c = Calculator.Calculate();
 
-            if (!c.success) return;
+            if (!c.success)
+            {
+                ResultCalc.Text = c.errorMessage;
+                return;
+            }
+
+            ResultCalc.Text = c.message;
 
             var eq = new SolidworksEquations(@"F:\frame\eq.txt");
 
@@ -81,7 +87,15 @@ namespace Ortogo.SolidWorks.StillageTask
         private void Calculate_Click(object sender, System.EventArgs e)
         {
             UpdateGlobalScope();
-            Calculate();
+            var c = Calculator.Calculate();
+
+            if (!c.success)
+            {
+                ResultCalc.Text = c.errorMessage;
+                return;
+            }
+
+            ResultCalc.Text = c.message;
         }
 
         private void InputDigestHandler(object sender, KeyPressEventArgs e)
@@ -131,61 +145,6 @@ namespace Ortogo.SolidWorks.StillageTask
             GlobalScope.SW = GlobalScope.NS * GlobalScope.L;
         }
 
-
-        public Calculated Calculate()
-        {
-            var c = default(Calculated);
-
-            c.frame = new Frame();
-
-            var res = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стелажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
-            c.traversa = new TraversaCut().Select();
-            if (c.traversa == null)
-            {
-                ResultCalc.Text = "Не удалось подобрать траверсу, примение другие параметры или расширьте библиотеку";
-                c.success = false;
-            }
-            else
-            {
-                res += $"Подобранная траверса: {c.traversa}{System.Environment.NewLine}";
-                try
-                {
-                    c.supportType = new SupportElement().Select();
-                    if (c.supportType == null)
-                    {
-                        ResultCalc.Text = "Не удалось подобрать стойку, примение другие параметры или расширьте библиотеку";
-                        c.success = false;
-                        return c;
-                    }
-                    c.hConn = c.frame.GetConnection("СГ", c.supportType);
-                    c.dConn = c.frame.GetConnection("СД", c.supportType);
-
-                    res += $"Подобранная стойка: {c.supportType}{System.Environment.NewLine}" +
-                        $"Горизонтальная связь: {c.hConn}{System.Environment.NewLine}" +
-                        $"Диагональная связь {c.dConn}{System.Environment.NewLine}";
-                    ResultCalc.Text = res;
-
-                    c.countTraversa = 2 * GlobalScope.NL;
-                    c.sumLenTraversa = c.countTraversa * c.traversa.Length;
-                    c.countConn = c.hConn.Count + c.dConn.Count;
-                    c.sumLenConn = c.hConn.Count * c.hConn.LK + c.dConn.Count * c.dConn.LK + (c.countConn - 1) * GlobalScope.TUSHM;
-                    res += $"Суммарная длина профиля траверс, м:{c.sumLenTraversa}{System.Environment.NewLine}" +
-                        $"С учетом припуска на распил(t={GlobalScope.TUSHM}), м: {Math.Round(c.sumLenTraversa + (GlobalScope.TUSHM * c.sumLenTraversa), 3)}{System.Environment.NewLine}" +
-                        $"Количество резов {c.countTraversa - 1}{System.Environment.NewLine}";
-                    res += $"Суммарная длина профиля связей с учетом припуска на распил, м: {c.sumLenConn}{System.Environment.NewLine}" +
-                        $"Количество резов {c.countConn - 1}{System.Environment.NewLine}";
-                    ResultCalc.Text = res;
-                }
-                catch (Exception ex)
-                {
-                    ResultCalc.Text += "Ошибка: " + ex.Message;
-                    c.success = false;
-                }
-            }
-            c.success = true;
-            return c;
-        }
-
         private void GenerateSpec_Click(object sender, EventArgs e)
         {
             ExportToExcel();
@@ -196,9 +155,15 @@ namespace Ortogo.SolidWorks.StillageTask
 
 
             UpdateGlobalScope();
-            var c = Calculate();
+            var c = Calculator.Calculate();
 
-            if (!c.success) return;
+            if (!c.success)
+            {
+                ResultCalc.Text = c.errorMessage;
+                return;
+            }
+
+            ResultCalc.Text = c.message;
 
             var saveFileDialog = new SaveFileDialog
             {
