@@ -113,13 +113,8 @@ namespace Ortogo.SolidWorks.StillageTask
 
         private void Calculate_Click(object sender, System.EventArgs e)
         {
-            Frame frame;
-            TraversaCut.Traversa traversa;
-            SupportElement.Type supportType;
-            Frame.Connection hConn, dConn;
-
             UpdateGlobalScope();
-            Calculate(out frame, out traversa, out supportType, out hConn, out dConn);
+            Calculate();
         }
 
         private void InputDigestHandler(object sender, KeyPressEventArgs e)
@@ -170,59 +165,58 @@ namespace Ortogo.SolidWorks.StillageTask
         }
 
 
-        public void Calculate(out Frame frame, out TraversaCut.Traversa traversa,
-            out SupportElement.Type support, out Frame.Connection hConn, out Frame.Connection dConn)
+        public Calculated Calculate()
         {
-            // pre init
-            support = null;
-            hConn = null;
-            dConn = null;
+            var c = default(Calculated);
 
-            frame = new Frame();
+            c.frame = new Frame();
 
             var res = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стелажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
-            traversa = new TraversaCut().Select();
-            if (traversa == null)
+            c.traversa = new TraversaCut().Select();
+            if (c.traversa == null)
             {
                 ResultCalc.Text = "Не удалось подобрать траверсу, примение другие параметры или расширьте библиотеку";
+                c.success = false;
             }
             else
             {
-                res += $"Подобранная траверса: {traversa}{System.Environment.NewLine}";
+                res += $"Подобранная траверса: {c.traversa}{System.Environment.NewLine}";
                 try
                 {
-                    support = new SupportElement().Select();
-                    if (support == null)
+                    c.supportType = new SupportElement().Select();
+                    if (c.supportType == null)
                     {
                         ResultCalc.Text = "Не удалось подобрать стойку, примение другие параметры или расширьте библиотеку";
-                        hConn = null;
-                        dConn = null;
-                        return;
+                        c.success = false;
+                        return c;
                     }
-                    hConn = frame.GetConnection("СГ", support);
-                    dConn = frame.GetConnection("СД", support);
+                    c.hConn = c.frame.GetConnection("СГ", c.supportType);
+                    c.dConn = c.frame.GetConnection("СД", c.supportType);
 
-                    res += $"Подобранная стойка: {support}{System.Environment.NewLine}" +
-                        $"Горизонтальная связь: {hConn}{System.Environment.NewLine}" +
-                        $"Диагональная связь {dConn}{System.Environment.NewLine}";
+                    res += $"Подобранная стойка: {c.supportType}{System.Environment.NewLine}" +
+                        $"Горизонтальная связь: {c.hConn}{System.Environment.NewLine}" +
+                        $"Диагональная связь {c.dConn}{System.Environment.NewLine}";
                     ResultCalc.Text = res;
 
-                    var countTraversa = 2 * GlobalScope.NL;
-                    var sumLenTraversa = countTraversa * traversa.Length;
-                    var countConn = hConn.Count + dConn.Count;
-                    var sumLenConn = hConn.Count * hConn.LK + dConn.Count * dConn.LK + (countConn - 1) * GlobalScope.TUSHM;
-                    res += $"Суммарная длина профиля траверс, м:{sumLenTraversa}{System.Environment.NewLine}" +
-                        $"С учетом припуска на распил(t={GlobalScope.TUSHM}), м: {Math.Round(sumLenTraversa + (GlobalScope.TUSHM * sumLenTraversa), 3)}{System.Environment.NewLine}" +
-                        $"Количество резов {countTraversa - 1}{System.Environment.NewLine}";
-                    res += $"Суммарная длина профиля связей с учетом припуска на распил, м: {sumLenConn}{System.Environment.NewLine}" +
-                        $"Количество резов {countConn - 1}{System.Environment.NewLine}";
+                    c.countTraversa = 2 * GlobalScope.NL;
+                    c.sumLenTraversa = c.countTraversa * c.traversa.Length;
+                    c.countConn = c.hConn.Count + c.dConn.Count;
+                    c.sumLenConn = c.hConn.Count * c.hConn.LK + c.dConn.Count * c.dConn.LK + (c.countConn - 1) * GlobalScope.TUSHM;
+                    res += $"Суммарная длина профиля траверс, м:{c.sumLenTraversa}{System.Environment.NewLine}" +
+                        $"С учетом припуска на распил(t={GlobalScope.TUSHM}), м: {Math.Round(c.sumLenTraversa + (GlobalScope.TUSHM * c.sumLenTraversa), 3)}{System.Environment.NewLine}" +
+                        $"Количество резов {c.countTraversa - 1}{System.Environment.NewLine}";
+                    res += $"Суммарная длина профиля связей с учетом припуска на распил, м: {c.sumLenConn}{System.Environment.NewLine}" +
+                        $"Количество резов {c.countConn - 1}{System.Environment.NewLine}";
                     ResultCalc.Text = res;
                 }
                 catch (Exception ex)
                 {
                     ResultCalc.Text += "Ошибка: " + ex.Message;
+                    c.success = false;
                 }
             }
+            c.success = true;
+            return c;
         }
 
         private void GenerateSpec_Click(object sender, EventArgs e)
@@ -232,15 +226,10 @@ namespace Ortogo.SolidWorks.StillageTask
 
         public void ExportToExcel()
         {
-            GlobalScope.QI = double.Parse(QI.Text);
-            GlobalScope.NL = double.Parse(NLI.Text);
-            GlobalScope.K = double.Parse(KI.Text);
-            GlobalScope.L = double.Parse(LI.Text) / 1000;
-            GlobalScope.G = double.Parse(GI.Text) / 1000;
-            GlobalScope.NS = double.Parse(NSI.Text);
+            
 
-            GlobalScope.SH = GlobalScope.K * (GlobalScope.NL + 1) + GlobalScope.K / 2;
-            GlobalScope.SW = GlobalScope.NS * GlobalScope.L;
+            UpdateGlobalScope();
+            var c = Calculate();
 
             var frame = new Frame();
 
@@ -338,5 +327,21 @@ namespace Ortogo.SolidWorks.StillageTask
         {
 
         }
+    }
+
+    public struct Calculated
+    {
+        public Frame frame { get; set; }
+        public TraversaCut.Traversa traversa { get; set; }
+        public SupportElement.Type supportType { get; set; }
+        public Frame.Connection hConn { get; set; }
+        public Frame.Connection dConn { get; set; }
+
+        public double countTraversa { get; set; }
+        public double sumLenTraversa { get; set; }
+        public int countConn { get; set; }
+        public double sumLenConn { get; set; }
+
+        public bool success;
     }
 }
