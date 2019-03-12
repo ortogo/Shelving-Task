@@ -22,13 +22,13 @@ namespace StillageTaskTest
             traversa = new TraversaCut().Select();
 
             Assert.AreNotEqual(null, traversa, "Traversa is not found");
-            Assert.AreEqual("ТК.1800.40.40.15", traversa.ToString(), "Traversa is not correct");
+            Assert.AreEqual("ТП.1800.100.40.15", traversa.ToString(), "Traversa is not correct");
 
+            // case if traversa not found
             TestSets.InitThird();
             traversa = new TraversaCut().Select();
 
-            Assert.AreNotEqual(null, traversa, "Traversa is not found");
-            Assert.AreEqual("ТК.2700.40.40.15", traversa.ToString(), "Traversa is not correct");
+            Assert.AreEqual(null, traversa, "Traversa is found");
         }
     }
 }
