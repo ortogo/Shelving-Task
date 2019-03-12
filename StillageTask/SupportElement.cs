@@ -83,12 +83,13 @@ namespace Ortogo.SolidWorks.StillageTask
         public Type Select()
         {
             var Nsd = (GlobalScope.QI * GlobalScope.Ge) * GlobalScope.NL / 2;
-            var lambda = Math.PI * Math.Sqrt(GlobalScope.ModuleJunga / (GlobalScope.R * 10E6));
+            var lambda = Math.PI * Math.Sqrt(210000 / GlobalScope.R);
 
             foreach (var item in SupportTypes)
             {
-                var lambda_y = GlobalScope.K / (item.IY * 10E2);
-                var lambda_z = (GlobalScope.K <= 1.2 ? 0.6 : 1.2) / (item.IZ * 10E2);
+                var lambda_y = GlobalScope.K *100 / item.IY;
+                var lambda_z = (GlobalScope.K <= 1.2 ? 0.6 : 1.2) * 100 / item.IZ;
+                Console.WriteLine("{0} {1}", lambda_y, lambda_z);
                 var lambda_ys = lambda_y * Math.Sqrt(GlobalScope.Beta1) / lambda;
                 var lambda_zs = lambda_z * Math.Sqrt(GlobalScope.Beta1) / lambda;
                 var phi_y = 0.5 * (1 + 0.34 * (lambda_ys - 0.2) + Math.Pow(lambda_ys, 2));
@@ -100,10 +101,9 @@ namespace Ortogo.SolidWorks.StillageTask
                 //if (Xi_z > 1) throw new Exception("Xi_z must less than 1");
 
                 var Xi = Math.Min(Xi_y, Xi_z);
-                var Nd = Xi * item.Aeff * 10E4 * GlobalScope.R * 10E6 / GlobalScope.KoefZap;
+                var Nd = Xi * (item.Aeff/10000) * GlobalScope.R * 10E5 / GlobalScope.KoefZap;
                 if (Nd >= Nsd)
                 {
-                    Console.WriteLine($"found support cut {item.A}");
                     return item;
                 }
             }
