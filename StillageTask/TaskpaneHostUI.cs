@@ -226,101 +226,56 @@ namespace Ortogo.SolidWorks.StillageTask
 
         public void ExportToExcel()
         {
-            
+
 
             UpdateGlobalScope();
             var c = Calculate();
 
-            var frame = new Frame();
 
-            var res = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стелажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
-            var traversa = new TraversaCut().Select();
-            if (traversa == null)
+            var saveFileDialog = new SaveFileDialog
             {
-                ResultCalc.Text = "Не удалось подобрать траверсу, примение другие параметры или расширьте библиотеку";
-            }
-            else
+                Filter = "Книга Excel (*.xlsx)|*.xlsx",
+                DefaultExt = "xlsx"
+            };
+
+            var desctopPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
+            saveFileDialog.InitialDirectory = desctopPath;
+            saveFileDialog.FileName = $"Р.{GlobalScope.SH * 1000}.{GlobalScope.G}.{c.supportType}.xlsx".Replace(",", ".");
+
+            var dialogRes = saveFileDialog.ShowDialog();
+            if (dialogRes.Equals(DialogResult.Cancel))
+                return;
+
+            using (var p = new ExcelPackage())
             {
-                res += $"Подобранная траверса: {traversa}{System.Environment.NewLine}";
-                try
-                {
-                    var support = new SupportElement().Select();
-                    if (support == null)
-                    {
-                        ResultCalc.Text = "Не удалось подобрать стойку, примение другие параметры или расширьте библиотеку";
-                        return;
-                    }
-                    var hConn = frame.GetConnection("СГ", support);
-                    var dConn = frame.GetConnection("СД", support);
+                var ws = p.Workbook.Worksheets.Add("Спецификация");
+                ws.Cells["A1"].Value = $"Комплектация рамы Р.{GlobalScope.SH * 1000}.{GlobalScope.G}.{c.supportType}";
+                ws.Cells["B1"].Value = $"Тип траверсы:";
+                ws.Cells["B2"].Value = $"{c.traversa}";
+                ws.Cells["B3"].Value = $"Количество траверс";
+                ws.Cells["B4"].Value = $"{c.countTraversa}";
+                ws.Cells["B5"].Value = $"Длина материала";
+                ws.Cells["B6"].Value = $"{Math.Round(c.sumLenTraversa + (GlobalScope.TUSHM * c.sumLenTraversa), 3)}";
+                ws.Cells["C1"].Value = $"Тип стойки";
+                ws.Cells["C2"].Value = $"{c.supportType}";
+                ws.Cells["C3"].Value = $"Длина";
+                ws.Cells["C4"].Value = $"{4 * GlobalScope.SH}";
+                ws.Cells["D1"].Value = $"Связь";
+                ws.Cells["D2"].Value = $"{c.hConn}";
+                ws.Cells["D3"].Value = $"Количество";
+                ws.Cells["D4"].Value = $"{c.hConn.Count}";
+                ws.Cells["D5"].Value = $"Длина";
+                ws.Cells["D6"].Value = $"{(c.hConn.Count - 1) * c.hConn.LK}";
+                ws.Cells["E1"].Value = $"Связь";
+                ws.Cells["E2"].Value = $"{c.dConn}";
+                ws.Cells["E3"].Value = $"Количество";
+                ws.Cells["E4"].Value = $"{c.dConn.Count}";
+                ws.Cells["E5"].Value = $"Длина";
+                ws.Cells["E6"].Value = $"{(c.dConn.Count - 1) * c.dConn.LK}";
 
-                    res += $"Подобранная стойка: {support}{System.Environment.NewLine}" +
-                        $"Горизонтальная связь: {hConn}{System.Environment.NewLine}" +
-                        $"Диагональная связь {dConn}{System.Environment.NewLine}";
-                    ResultCalc.Text = res;
-
-                    var countTraversa = 2 * GlobalScope.NL;
-                    var sumLenTraversa = countTraversa * traversa.Length;
-                    var countConn = hConn.Count + dConn.Count;
-                    var sumLenConn = hConn.Count * hConn.LK + dConn.Count * dConn.LK + (countConn - 1) * GlobalScope.TUSHM;
-                    res += $"Суммарная длина профиля траверс, м:{sumLenTraversa}{System.Environment.NewLine}" +
-                        $"С учетом припуска на распил(t={GlobalScope.TUSHM}), м: {Math.Round(sumLenTraversa + (GlobalScope.TUSHM * sumLenTraversa), 3)}{System.Environment.NewLine}" +
-                        $"Количество резов {countTraversa - 1}{System.Environment.NewLine}";
-                    res += $"Суммарная длина профиля связей с учетом припуска на распил, м: {sumLenConn}{System.Environment.NewLine}" +
-                        $"Количество резов {countConn - 1}{System.Environment.NewLine}";
-                    ResultCalc.Text = res;
-
-                    var saveFileDialog = new SaveFileDialog
-                    {
-                        Filter = "Книга Excel (*.xlsx)|*.xlsx",
-                        DefaultExt = "xlsx"
-                    };
-
-                    var desctopPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
-                    saveFileDialog.InitialDirectory = desctopPath;
-                    saveFileDialog.FileName = $"Р.{GlobalScope.SH * 1000}.{GlobalScope.G}.{support}.xlsx".Replace(",", ".");
-
-                    var dialogRes = saveFileDialog.ShowDialog();
-                    if (dialogRes.Equals(DialogResult.Cancel))
-                        return;
-
-                    using (var p = new ExcelPackage())
-                    {
-                        var ws = p.Workbook.Worksheets.Add("Спецификация");
-                        ws.Cells["A1"].Value = $"Комплектация рамы Р.{GlobalScope.SH * 1000}.{GlobalScope.G}.{support}";
-                        ws.Cells["B1"].Value = $"Тип траверсы:";
-                        ws.Cells["B2"].Value = $"{traversa}";
-                        ws.Cells["B3"].Value = $"Количество траверс";
-                        ws.Cells["B4"].Value = $"{countTraversa}";
-                        ws.Cells["B5"].Value = $"Длина материала";
-                        ws.Cells["B6"].Value = $"{Math.Round(sumLenTraversa + (GlobalScope.TUSHM * sumLenTraversa), 3)}";
-                        ws.Cells["C1"].Value = $"Тип стойки";
-                        ws.Cells["C2"].Value = $"{support}";
-                        ws.Cells["C3"].Value = $"Длина";
-                        ws.Cells["C4"].Value = $"{4 * GlobalScope.SH}";
-                        ws.Cells["D1"].Value = $"Связь";
-                        ws.Cells["D2"].Value = $"{hConn}";
-                        ws.Cells["D3"].Value = $"Количество";
-                        ws.Cells["D4"].Value = $"{hConn.Count}";
-                        ws.Cells["D5"].Value = $"Длина";
-                        ws.Cells["D6"].Value = $"{(hConn.Count - 1) * hConn.LK}";
-                        ws.Cells["E1"].Value = $"Связь";
-                        ws.Cells["E2"].Value = $"{dConn}";
-                        ws.Cells["E3"].Value = $"Количество";
-                        ws.Cells["E4"].Value = $"{dConn.Count}";
-                        ws.Cells["E5"].Value = $"Длина";
-                        ws.Cells["E6"].Value = $"{(dConn.Count - 1) * dConn.LK}";
-
-                        p.SaveAs(new FileInfo(saveFileDialog.FileName));
-                        MessageBox.Show("Успешно сохранено");
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    ResultCalc.Text += "Ошибка: " + ex.Message;
-                }
+                p.SaveAs(new FileInfo(saveFileDialog.FileName));
+                MessageBox.Show("Успешно сохранено");
             }
-            return;
         }
 
         private void label1_Click(object sender, EventArgs e)
