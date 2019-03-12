@@ -126,6 +126,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Calculated.cs" />
     <Compile Include="GlobalScope.cs" />
     <Compile Include="Equations.cs" />
     <Compile Include="Frame.cs" />

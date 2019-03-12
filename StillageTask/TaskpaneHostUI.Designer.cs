@@ -42,7 +42,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.Calculate = new System.Windows.Forms.Button();
+            this.CalculateButton = new System.Windows.Forms.Button();
             this.Build = new System.Windows.Forms.Button();
             this.ResultCalc = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -201,20 +201,20 @@
             this.label8.TabIndex = 13;
             this.label8.Text = "Количество секций, шт";
             // 
-            // Calculate
+            // CalculateButton
             // 
-            this.Calculate.FlatAppearance.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.Calculate.FlatAppearance.BorderSize = 2;
-            this.Calculate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Calculate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Calculate.Location = new System.Drawing.Point(4, 216);
-            this.Calculate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Calculate.Name = "Calculate";
-            this.Calculate.Size = new System.Drawing.Size(124, 34);
-            this.Calculate.TabIndex = 14;
-            this.Calculate.Text = "Посчитать";
-            this.Calculate.UseVisualStyleBackColor = true;
-            this.Calculate.Click += new System.EventHandler(this.Calculate_Click);
+            this.CalculateButton.FlatAppearance.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.CalculateButton.FlatAppearance.BorderSize = 2;
+            this.CalculateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CalculateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.CalculateButton.Location = new System.Drawing.Point(4, 216);
+            this.CalculateButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CalculateButton.Name = "CalculateButton";
+            this.CalculateButton.Size = new System.Drawing.Size(124, 34);
+            this.CalculateButton.TabIndex = 14;
+            this.CalculateButton.Text = "Посчитать";
+            this.CalculateButton.UseVisualStyleBackColor = true;
+            this.CalculateButton.Click += new System.EventHandler(this.Calculate_Click);
             // 
             // Build
             // 
@@ -280,7 +280,7 @@
             this.Controls.Add(this.label9);
             this.Controls.Add(this.ResultCalc);
             this.Controls.Add(this.Build);
-            this.Controls.Add(this.Calculate);
+            this.Controls.Add(this.CalculateButton);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -321,7 +321,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button Calculate;
+        private System.Windows.Forms.Button CalculateButton;
         private System.Windows.Forms.Button Build;
         private System.Windows.Forms.TextBox ResultCalc;
         private System.Windows.Forms.Label label9;
