@@ -1,6 +1,6 @@
 ﻿namespace Ortogo.SolidWorks.StillageTask
 {
-    class GlobalScope
+    public class GlobalScope
     {
         public static double R = 235; // MPa
         public static double KoefZap = 1;
@@ -17,7 +17,7 @@
         public static double G { get; set; }
         public static double NS { get; set; }
 
-        public static double SH { get; set; }
-        public static double SW { get; set; }
+        public static double SH { get => K * (NL + 1) + 0.2; }
+        public static double SW { get => NS * L; }
     }
 }
