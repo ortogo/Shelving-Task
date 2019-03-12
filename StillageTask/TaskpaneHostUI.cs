@@ -25,63 +25,28 @@ namespace Ortogo.SolidWorks.StillageTask
 
         private void Build_Click(object sender, System.EventArgs e)
         {
+            BuildFrame();
+        }
+
+        public void BuildFrame()
+        {
+            UpdateGlobalScope();
+            var c = Calculate();
+
             var eq = new SolidworksEquations(@"F:\frame\eq.txt");
-            var frame = new Frame();
 
-            var res = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стелажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
-            var traversa = new TraversaCut().Select();
-            if (traversa == null)
-            {
-                ResultCalc.Text = "Не удалось подобрать траверсу, примение другие параметры или расширьте библиотеку";
-            }
-            else
-            {
-                res += $"Подобранная траверса: {traversa}{System.Environment.NewLine}";
-                try
-                {
-                    var support = new SupportElement().Select();
-                    if (support == null)
-                    {
-                        ResultCalc.Text = "Не удалось подобрать стойку, примение другие параметры или расширьте библиотеку";
-                        return;
-                    }
-                    var hConn = frame.GetConnection("СГ", support);
-                    var dConn = frame.GetConnection("СД", support);
-
-                    res += $"Подобранная стойка: {support}{System.Environment.NewLine}" +
-                        $"Горизонтальная связь: {hConn}{System.Environment.NewLine}" +
-                        $"Диагональная связь {dConn}{System.Environment.NewLine}";
-                    ResultCalc.Text = res;
-
-                    var countTraversa = 2 * GlobalScope.NL;
-                    var sumLenTraversa = countTraversa * traversa.Length;
-                    var countConn = hConn.Count + dConn.Count;
-                    var sumLenConn = hConn.Count * hConn.LK + dConn.Count * dConn.LK + (countConn - 1) * GlobalScope.TUSHM;
-                    res += $"Суммарная длина профиля траверс, м:{sumLenTraversa}{System.Environment.NewLine}" +
-                        $"С учетом припуска на распил(t={GlobalScope.TUSHM}), м: {Math.Round(sumLenTraversa + (GlobalScope.TUSHM * sumLenTraversa), 3)}{System.Environment.NewLine}" +
-                        $"Количество резов {countTraversa - 1}{System.Environment.NewLine}";
-                    res += $"Суммарная длина профиля связей с учетом припуска на распил, м: {sumLenConn}{System.Environment.NewLine}" +
-                        $"Количество резов {countConn - 1}{System.Environment.NewLine}";
-                    ResultCalc.Text = res;
-
-                    eq.Values["NL"].Value = GlobalScope.NL;
-                    eq.Values["K"].Value = GlobalScope.K * 1000;
-                    eq.Values["L"].Value = GlobalScope.L * 1000;
-                    eq.Values["H"].Value = GlobalScope.SH * 1000;
-                    eq.Values["NS"].Value = GlobalScope.NS;
-                    eq.Values["W"].Value = GlobalScope.SW * 1000;
-                    eq.Values["G"].Value = GlobalScope.G * 1000;
-                    eq.Values["tkh"].Value = traversa.HSize;
-                    eq.Values["tkb"].Value = traversa.BSize;
-                    eq.Values["SA"].Value = support.A;
-                    eq.Values["SB"].Value = support.B;
-                    eq.Save();
-                }
-                catch (Exception ex)
-                {
-                    ResultCalc.Text += "Ошибка: " + ex.Message;
-                }
-            }
+            eq.Values["NL"].Value = GlobalScope.NL;
+            eq.Values["K"].Value = GlobalScope.K * 1000;
+            eq.Values["L"].Value = GlobalScope.L * 1000;
+            eq.Values["H"].Value = GlobalScope.SH * 1000;
+            eq.Values["NS"].Value = GlobalScope.NS;
+            eq.Values["W"].Value = GlobalScope.SW * 1000;
+            eq.Values["G"].Value = GlobalScope.G * 1000;
+            eq.Values["tkh"].Value = c.traversa.HSize;
+            eq.Values["tkb"].Value = c.traversa.BSize;
+            eq.Values["SA"].Value = c.supportType.A;
+            eq.Values["SB"].Value = c.supportType.B;
+            eq.Save();
 
             SwApp = new SldWorks();
             var doc = OpenAssembly(@"F:\frame\рама.SLDASM");
