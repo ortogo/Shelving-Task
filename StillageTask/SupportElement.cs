@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Ortogo.SolidWorks.StillageTask
 {
-    class SupportElement
+    public class SupportElement
     {
         public class Type
         {

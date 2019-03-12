@@ -65,12 +65,12 @@ namespace Ortogo.SolidWorks.StillageTask
                     ResultCalc.Text = res;
 
                     eq.Values["NL"].Value = GlobalScope.NL;
-                    eq.Values["K"].Value = GlobalScope.K*1000;
-                    eq.Values["L"].Value = GlobalScope.L*1000;
-                    eq.Values["H"].Value = GlobalScope.SH*1000;
+                    eq.Values["K"].Value = GlobalScope.K * 1000;
+                    eq.Values["L"].Value = GlobalScope.L * 1000;
+                    eq.Values["H"].Value = GlobalScope.SH * 1000;
                     eq.Values["NS"].Value = GlobalScope.NS;
-                    eq.Values["W"].Value = GlobalScope.SW*1000;
-                    eq.Values["G"].Value = GlobalScope.G*1000;
+                    eq.Values["W"].Value = GlobalScope.SW * 1000;
+                    eq.Values["G"].Value = GlobalScope.G * 1000;
                     eq.Values["tkh"].Value = traversa.HSize;
                     eq.Values["tkb"].Value = traversa.BSize;
                     eq.Values["SA"].Value = support.A;
@@ -93,7 +93,7 @@ namespace Ortogo.SolidWorks.StillageTask
             return Open(DocumentPath, swDocumentTypes_e.swDocASSEMBLY);
         }
 
-       
+
 
         public ModelDoc2 Open(string DocumentPath, swDocumentTypes_e Type)
         {
@@ -105,7 +105,7 @@ namespace Ortogo.SolidWorks.StillageTask
                 )
             {
                 doc = SwApp.ActivateDoc(Path.GetFileName(DocumentPath));
-                
+
             }
             doc = SwApp.ActiveDoc;
             return doc;
@@ -113,7 +113,13 @@ namespace Ortogo.SolidWorks.StillageTask
 
         private void Calculate_Click(object sender, System.EventArgs e)
         {
-            Calc();
+            Frame frame;
+            TraversaCut.Traversa traversa;
+            SupportElement.Type supportType;
+            Frame.Connection hConn, dConn;
+
+            UpdateGlobalScope();
+            Calculate(out frame, out traversa, out supportType, out hConn, out dConn);
         }
 
         private void InputDigestHandler(object sender, KeyPressEventArgs e)
@@ -150,8 +156,7 @@ namespace Ortogo.SolidWorks.StillageTask
 
         }
 
-
-        public string Calc()
+        public void UpdateGlobalScope()
         {
             GlobalScope.QI = double.Parse(QI.Text);
             GlobalScope.NL = double.Parse(NLI.Text);
@@ -160,13 +165,23 @@ namespace Ortogo.SolidWorks.StillageTask
             GlobalScope.G = double.Parse(GI.Text) / 1000;
             GlobalScope.NS = double.Parse(NSI.Text);
 
-            GlobalScope.SH = GlobalScope.K * (GlobalScope.NL + 1)+GlobalScope.K/2;
+            GlobalScope.SH = GlobalScope.K * (GlobalScope.NL + 1) + GlobalScope.K / 2;
             GlobalScope.SW = GlobalScope.NS * GlobalScope.L;
+        }
 
-            var frame = new Frame();
+
+        public void Calculate(out Frame frame, out TraversaCut.Traversa traversa,
+            out SupportElement.Type support, out Frame.Connection hConn, out Frame.Connection dConn)
+        {
+            // pre init
+            support = null;
+            hConn = null;
+            dConn = null;
+
+            frame = new Frame();
 
             var res = $"Высота стелажа, м:{GlobalScope.SH}, Ширина стелажа, м: {GlobalScope.SW}{System.Environment.NewLine}";
-            var traversa = new TraversaCut().Select();
+            traversa = new TraversaCut().Select();
             if (traversa == null)
             {
                 ResultCalc.Text = "Не удалось подобрать траверсу, примение другие параметры или расширьте библиотеку";
@@ -176,14 +191,16 @@ namespace Ortogo.SolidWorks.StillageTask
                 res += $"Подобранная траверса: {traversa}{System.Environment.NewLine}";
                 try
                 {
-                    var support = new SupportElement().Select();
+                    support = new SupportElement().Select();
                     if (support == null)
                     {
                         ResultCalc.Text = "Не удалось подобрать стойку, примение другие параметры или расширьте библиотеку";
-                        return "";
-                    } 
-                    var hConn = frame.GetConnection("СГ", support);
-                    var dConn = frame.GetConnection("СД", support);
+                        hConn = null;
+                        dConn = null;
+                        return;
+                    }
+                    hConn = frame.GetConnection("СГ", support);
+                    dConn = frame.GetConnection("СД", support);
 
                     res += $"Подобранная стойка: {support}{System.Environment.NewLine}" +
                         $"Горизонтальная связь: {hConn}{System.Environment.NewLine}" +
@@ -193,12 +210,12 @@ namespace Ortogo.SolidWorks.StillageTask
                     var countTraversa = 2 * GlobalScope.NL;
                     var sumLenTraversa = countTraversa * traversa.Length;
                     var countConn = hConn.Count + dConn.Count;
-                    var sumLenConn = hConn.Count * hConn.LK + dConn.Count * dConn.LK + (countConn-1) * GlobalScope.TUSHM;
+                    var sumLenConn = hConn.Count * hConn.LK + dConn.Count * dConn.LK + (countConn - 1) * GlobalScope.TUSHM;
                     res += $"Суммарная длина профиля траверс, м:{sumLenTraversa}{System.Environment.NewLine}" +
-                        $"С учетом припуска на распил(t={GlobalScope.TUSHM}), м: {Math.Round(sumLenTraversa+(GlobalScope.TUSHM*sumLenTraversa), 3)}{System.Environment.NewLine}" +
-                        $"Количество резов {countTraversa-1}{System.Environment.NewLine}";
+                        $"С учетом припуска на распил(t={GlobalScope.TUSHM}), м: {Math.Round(sumLenTraversa + (GlobalScope.TUSHM * sumLenTraversa), 3)}{System.Environment.NewLine}" +
+                        $"Количество резов {countTraversa - 1}{System.Environment.NewLine}";
                     res += $"Суммарная длина профиля связей с учетом припуска на распил, м: {sumLenConn}{System.Environment.NewLine}" +
-                        $"Количество резов {countConn-1}{System.Environment.NewLine}";
+                        $"Количество резов {countConn - 1}{System.Environment.NewLine}";
                     ResultCalc.Text = res;
                 }
                 catch (Exception ex)
@@ -206,7 +223,6 @@ namespace Ortogo.SolidWorks.StillageTask
                     ResultCalc.Text += "Ошибка: " + ex.Message;
                 }
             }
-            return res;
         }
 
         private void GenerateSpec_Click(object sender, EventArgs e)
@@ -272,43 +288,43 @@ namespace Ortogo.SolidWorks.StillageTask
 
                     var desctopPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
                     saveFileDialog.InitialDirectory = desctopPath;
-                    saveFileDialog.FileName = $"Р.{GlobalScope.SH*1000}.{GlobalScope.G}.{support}.xlsx".Replace(",", ".");
+                    saveFileDialog.FileName = $"Р.{GlobalScope.SH * 1000}.{GlobalScope.G}.{support}.xlsx".Replace(",", ".");
 
                     var dialogRes = saveFileDialog.ShowDialog();
                     if (dialogRes.Equals(DialogResult.Cancel))
                         return;
 
-                        using (var p = new ExcelPackage())
-                                {
-                            var ws = p.Workbook.Worksheets.Add("Спецификация");
-                            ws.Cells["A1"].Value = $"Комплектация рамы Р.{GlobalScope.SH*1000}.{GlobalScope.G}.{support}";
-                            ws.Cells["B1"].Value = $"Тип траверсы:";
-                            ws.Cells["B2"].Value = $"{traversa}";
-                            ws.Cells["B3"].Value = $"Количество траверс";
-                            ws.Cells["B4"].Value = $"{countTraversa}";
-                            ws.Cells["B5"].Value = $"Длина материала";
-                            ws.Cells["B6"].Value = $"{Math.Round(sumLenTraversa + (GlobalScope.TUSHM * sumLenTraversa), 3)}";
-                            ws.Cells["C1"].Value = $"Тип стойки";
-                            ws.Cells["C2"].Value = $"{support}";
-                            ws.Cells["C3"].Value = $"Длина";
-                            ws.Cells["C4"].Value = $"{4*GlobalScope.SH}";
-                            ws.Cells["D1"].Value = $"Связь";
-                            ws.Cells["D2"].Value = $"{hConn}";
-                            ws.Cells["D3"].Value = $"Количество";
-                            ws.Cells["D4"].Value = $"{hConn.Count}";
-                            ws.Cells["D5"].Value = $"Длина";
-                            ws.Cells["D6"].Value = $"{(hConn.Count-1) * hConn.LK}";
-                            ws.Cells["E1"].Value = $"Связь";
-                            ws.Cells["E2"].Value = $"{dConn}";
-                            ws.Cells["E3"].Value = $"Количество";
-                            ws.Cells["E4"].Value = $"{dConn.Count}";
-                            ws.Cells["E5"].Value = $"Длина";
-                            ws.Cells["E6"].Value = $"{(dConn.Count - 1) * dConn.LK}";
+                    using (var p = new ExcelPackage())
+                    {
+                        var ws = p.Workbook.Worksheets.Add("Спецификация");
+                        ws.Cells["A1"].Value = $"Комплектация рамы Р.{GlobalScope.SH * 1000}.{GlobalScope.G}.{support}";
+                        ws.Cells["B1"].Value = $"Тип траверсы:";
+                        ws.Cells["B2"].Value = $"{traversa}";
+                        ws.Cells["B3"].Value = $"Количество траверс";
+                        ws.Cells["B4"].Value = $"{countTraversa}";
+                        ws.Cells["B5"].Value = $"Длина материала";
+                        ws.Cells["B6"].Value = $"{Math.Round(sumLenTraversa + (GlobalScope.TUSHM * sumLenTraversa), 3)}";
+                        ws.Cells["C1"].Value = $"Тип стойки";
+                        ws.Cells["C2"].Value = $"{support}";
+                        ws.Cells["C3"].Value = $"Длина";
+                        ws.Cells["C4"].Value = $"{4 * GlobalScope.SH}";
+                        ws.Cells["D1"].Value = $"Связь";
+                        ws.Cells["D2"].Value = $"{hConn}";
+                        ws.Cells["D3"].Value = $"Количество";
+                        ws.Cells["D4"].Value = $"{hConn.Count}";
+                        ws.Cells["D5"].Value = $"Длина";
+                        ws.Cells["D6"].Value = $"{(hConn.Count - 1) * hConn.LK}";
+                        ws.Cells["E1"].Value = $"Связь";
+                        ws.Cells["E2"].Value = $"{dConn}";
+                        ws.Cells["E3"].Value = $"Количество";
+                        ws.Cells["E4"].Value = $"{dConn.Count}";
+                        ws.Cells["E5"].Value = $"Длина";
+                        ws.Cells["E6"].Value = $"{(dConn.Count - 1) * dConn.LK}";
 
-                            p.SaveAs(new FileInfo(saveFileDialog.FileName));
-                            MessageBox.Show("Успешно сохранено");
-                        }
-                    
+                        p.SaveAs(new FileInfo(saveFileDialog.FileName));
+                        MessageBox.Show("Успешно сохранено");
+                    }
+
                 }
                 catch (Exception ex)
                 {

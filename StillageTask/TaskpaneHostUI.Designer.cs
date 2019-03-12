@@ -298,7 +298,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "TaskpaneHostUI";
-            this.Size = new System.Drawing.Size(493, 630);
+            this.Size = new System.Drawing.Size(310, 630);
             this.Load += new System.EventHandler(this.TaskpaneHostUI_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

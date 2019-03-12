@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ortogo.SolidWorks.StillageTask
 {
-    class TraversaCut
+    public class TraversaCut
     {
         public class Traversa
         {

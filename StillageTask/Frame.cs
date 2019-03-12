@@ -2,7 +2,7 @@
 
 namespace Ortogo.SolidWorks.StillageTask
 {
-    class Frame
+    public class Frame
     {
         public class Connection
         {
