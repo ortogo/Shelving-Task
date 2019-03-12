@@ -15,9 +15,6 @@ namespace StillageTaskTest
             GlobalScope.L = 1.050;
             GlobalScope.G = 0.5;
             GlobalScope.NS = 5;
-
-            GlobalScope.SH = GlobalScope.K * (GlobalScope.NL + 1) + GlobalScope.K / 2;
-            GlobalScope.SW = GlobalScope.NS * GlobalScope.L;
         }
 
         public static void InitSecond()
@@ -28,9 +25,6 @@ namespace StillageTaskTest
             GlobalScope.L = 1.8;
             GlobalScope.G = 1.1;
             GlobalScope.NS = 5;
-
-            GlobalScope.SH = GlobalScope.K * (GlobalScope.NL + 1) + GlobalScope.K / 2;
-            GlobalScope.SW = GlobalScope.NS * GlobalScope.L;
         }
 
         public static void InitThird()
@@ -41,9 +35,6 @@ namespace StillageTaskTest
             GlobalScope.L = 2.7;
             GlobalScope.G = 1.1;
             GlobalScope.NS = 5;
-
-            GlobalScope.SH = GlobalScope.K * (GlobalScope.NL + 1) + GlobalScope.K / 2;
-            GlobalScope.SW = GlobalScope.NS * GlobalScope.L;
         }
     }
 }
