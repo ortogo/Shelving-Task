@@ -57,28 +57,38 @@ namespace Ortogo.SolidWorks.StillageTask
                     WY = 3.54,
                     JY = 7.07,
                 },
+                new Traversa
+                {
+                    Mark = "ТП",
+                    Length = 1800,
+                    HSize = 100,
+                    BSize = 40,
+                    SSize = 15,
+                    WY = 10.10,
+                    JY = 50.49,
+                },
             };
         }
 
         public Traversa Select()
         {
-            var qy = (GlobalScope.QI * GlobalScope.Ge) / (GlobalScope.L * 2);
+            var qy = (GlobalScope.QI * GlobalScope.Ge) / (GlobalScope.L * 2); //N/m
             var My = (qy * Math.Pow(GlobalScope.L, 2)) / 8;
-            var WYc = My / (GlobalScope.R*10E6 * GlobalScope.KoefZap);
 
-            var JYc = (200 * 5 * qy * Math.Pow(GlobalScope.L, 4)) / (384 * GlobalScope.ModuleJunga);
+            
 
             foreach (var trav in TypeSizes)
             {
-                if ((trav.WY * 10E-6) >= WYc && (trav.JY * 10E-6) >= JYc)
+                var sigma = My / trav.WY;
+                var f = (5 / 384) * ((qy * Math.Pow(GlobalScope.L, 4)) / (GlobalScope.ModuleJunga * trav.JY));
+                if (sigma <= (GlobalScope.R * GlobalScope.KoefZap)
+                    && f <= (GlobalScope.L/200))
                 {
                     trav.Length = GlobalScope.L;
                     trav.QYC = qy;
                     trav.MYC = My;
-                    trav.WYC = WYc;
-                    trav.JYC = JYc;
-                    trav.Sigma = My / (trav.WY * 10E-6);
-                    trav.Fc = (5 * qy * Math.Pow(GlobalScope.L, 4)) / (384* GlobalScope.ModuleJunga * (trav.JY * 10E-6));
+                    trav.Sigma = sigma;
+                    trav.Fc = f;
                     return trav;
                 }
             }
