@@ -140,9 +140,6 @@ namespace Ortogo.SolidWorks.StillageTask
             GlobalScope.L = double.Parse(LI.Text) / 1000;
             GlobalScope.G = double.Parse(GI.Text) / 1000;
             GlobalScope.NS = double.Parse(NSI.Text);
-
-            GlobalScope.SH = GlobalScope.K * (GlobalScope.NL + 1) + GlobalScope.K / 2;
-            GlobalScope.SW = GlobalScope.NS * GlobalScope.L;
         }
 
         private void GenerateSpec_Click(object sender, EventArgs e)
